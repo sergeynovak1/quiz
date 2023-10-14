@@ -1,4 +1,5 @@
 import requests
+from typing import List
 from fastapi import APIRouter, HTTPException
 
 from .schemas import QuizRequest, QuizResponse
@@ -6,7 +7,7 @@ from .schemas import QuizRequest, QuizResponse
 router = APIRouter()
 
 
-@router.post("/get_questions/", response_model=QuizResponse)
+@router.post("/get_questions/", response_model=List[QuizResponse])
 async def get_questions(quiz_request: QuizRequest):
     questions_num = quiz_request.questions_num
     if questions_num <= 0:
@@ -19,4 +20,14 @@ async def get_questions(quiz_request: QuizRequest):
 
     questions = response.json()
 
-    return {"questions": questions}
+    filtered_questions = [
+        QuizResponse(
+            id=q['id'],
+            question=q['question'],
+            answer=q['answer'],
+            created_at=q.get('created_at')
+        )
+        for q in questions
+    ]
+
+    return filtered_questions

@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from datetime import datetime
 
 
 class QuizRequest(BaseModel):
@@ -6,4 +7,7 @@ class QuizRequest(BaseModel):
 
 
 class QuizResponse(BaseModel):
-    questions: list
+    id: int
+    question: str
+    answer: str
+    created_at: datetime
